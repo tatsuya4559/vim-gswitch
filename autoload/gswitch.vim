@@ -40,8 +40,7 @@ endfunction
 
 function! gswitch#set_mapping() abort
   nnoremap <buffer><silent> q :<C-u>call gswitch#close_buf()<CR>
-  inoremap <buffer><silent> <C-c> :<C-u>call gswitch#close_buf()<CR>
-  inoremap <buffer><silent> <Esc> :<C-u>call gswitch#close_buf()<CR>
+  inoremap <buffer><silent> <C-c> <Esc>:<C-u>call gswitch#close_buf()<CR>
 
   nnoremap <buffer><silent> <CR> :call gswitch#on_selected()<CR>
   inoremap <buffer><silent> <CR> <Esc>:call gswitch#on_selected()<CR>
