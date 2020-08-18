@@ -7,25 +7,34 @@ endfunction
 
 function! gswitch#git#do_checkout(branch, options) abort
   let msg = system('git checkout ' . join(a:options) . ' ' . a:branch)
-  let status_code = system('echo $?')
-  if status_code != 0
-    call gswitch#util#echoerr(msg)
+  if v:shell_error != 0
+    return trim(msg)
+  endif
+  return ''
+endfunction
+
+function! gswitch#git#create_branch() abort
+  let branch = split(trim(getline(".")))[-1]
+  let err = gswitch#git#do_checkout(branch, ['-b'])
+  if err != ''
+    call gswitch#util#echoerr(err)
+  else
+    echo 'Created a new branch: ' . branch
   endif
   call gswitch#close_buf()
   checktime
 endfunction
 
-function! gswitch#git#create_branch() abort
-  let branch = split(trim(getline(".")))[-1]
-  call gswitch#git#do_checkout(branch, ['-b'])
-  echo 'Created a new branch: ' . branch
-endfunction
-
 function! gswitch#git#switch_branch() abort
-  " TODO: checkoutできなかったときの処理
   let branch = split(trim(getline(".")))[-1]
-  call gswitch#git#do_checkout(branch, [])
-  echo 'Switched to ' . branch
+  let err = gswitch#git#do_checkout(branch, [])
+  if err != ''
+    call gswitch#util#echoerr(err)
+  else
+    echo 'Switched to ' . branch
+  endif
+  call gswitch#close_buf()
+  checktime
 endfunction
 
 let &cpo = s:save_cpo
